@@ -4,7 +4,7 @@ from google_sync import GoogleCalendarSync
 from dotenv import load_dotenv
 import os
 
-load_dotenv() # load ID from .env
+load_dotenv() # load ID from .env 
 GOOGLE_CALENDAR_ID = os.environ.get('CALENDAR_ID')  # Replace with actual calendar ID
 
 def sync_calendar_with_google():
