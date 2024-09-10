@@ -1,9 +1,11 @@
 from scraper import Scrape
 from calendar_manager import MatchCalendar
 from google_sync import GoogleCalendarSync
+from dotenv import load_dotenv
+import os
 
-# Configuration for Google Calendar
-GOOGLE_CALENDAR_ID = 'YOUR_CALENDAR_ID_HERE'  # Replace with actual calendar ID
+load_dotenv() # load ID from .env
+GOOGLE_CALENDAR_ID = os.environ.get('CALENDAR_ID')  # Replace with actual calendar ID
 
 def sync_calendar_with_google():
     # Scrape the matches

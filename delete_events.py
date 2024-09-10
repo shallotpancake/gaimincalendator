@@ -4,6 +4,7 @@ from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 import os
 import pickle
+from dotenv import load_dotenv
 
 class GoogleCalendarCleaner:
     SCOPES = ['https://www.googleapis.com/auth/calendar']
@@ -45,7 +46,8 @@ class GoogleCalendarCleaner:
             except Exception as e:
                 print(f"An error occurred: {e}")
 
-# Usage:
-calendar_id = '0a07c917af84c81af957586ad561302d22fba2a1799b765310522145c43a62da@group.calendar.google.com'  # Replace with your actual calendar ID
-cleaner = GoogleCalendarCleaner()
-cleaner.delete_all_events(calendar_id)
+if __name__ == "__main__":   
+    load_dotenv() # load ID from .env
+    GOOGLE_CALENDAR_ID = os.environ.get('CALENDAR_ID')  # Replace with actual calendar ID
+    cleaner = GoogleCalendarCleaner()
+    cleaner.delete_all_events(GOOGLE_CALENDAR_ID)

@@ -8,3 +8,4 @@
 /MediaWikiAPI.py
 /token.pickle
 /__pycache__
+.env
