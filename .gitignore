@@ -1,0 +1,10 @@
+/.venv
+/.vscode
+/cache.html
+/cache_timestamp.txt
+/credentials.json
+/lib.py
+/matches_calendar.ics
+/MediaWikiAPI.py
+/token.pickle
+/__pycache__
