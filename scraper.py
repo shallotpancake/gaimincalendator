@@ -2,7 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 from collections import defaultdict
 from models import Match, Stream
-from utils import extract_category_and_title_from_href
 from datetime import datetime, timedelta, timezone
 
 class Scrape:
@@ -31,7 +30,7 @@ class Scrape:
             team_left = self.extract_team_name(match, 'team-left')
             team_right = self.extract_team_name(match, 'team-right')
             tournament = self.extract_tournament(match)
-            streams = self.extract_streams(match)
+            streams = self.extract_streams(match)  # Streams now contains Stream objects
             data_timestamp, data_tz = self.extract_timezone_aware_datetime(match)
             
             match_entry = Match(team_left, team_right, tournament, streams, data_timestamp, data_tz)
@@ -56,6 +55,10 @@ class Scrape:
         return None
 
     def extract_streams(self, match):
+        """
+        Extracts all stream information for the match and returns them categorized by service.
+        Each stream contains a dynamically constructed link.
+        """
         match_streams = match.find(class_='match-streams')
         categorized_streams = defaultdict(list)
         
@@ -63,9 +66,9 @@ class Scrape:
             streams = match_streams.find_all('a', href=True)
             for stream in streams:
                 href = stream.get('href', '')
-                title = stream.get('title', '')
-                category, stream_title = extract_category_and_title_from_href(href)
-                categorized_streams[category].append(Stream(stream_title))
+                stream_obj = self.extract_category_and_title_from_href(href)
+                if stream_obj:
+                    categorized_streams[stream_obj.service].append(stream_obj)  # Store the Stream object
         
         return dict(categorized_streams)
 
@@ -95,3 +98,15 @@ class Scrape:
             
             return dt, tz
         return None, None
+    
+    def extract_category_and_title_from_href(self, href):
+        """
+        Extracts the service (platform) and the stream ID from the href.
+        Constructs a Stream object with the link.
+        """
+        parts = href.split('/')
+        if len(parts) >= 4 and parts[2] == 'Special:Stream':
+            service = parts[3]  # The service category (e.g., 'youtube', 'twitch')
+            stream_id = parts[-1]  # The last part is the unique identifier for the stream
+            return Stream(service, stream_id)  # Return a Stream object with the link
+        return None  # Return None if the format is not valid
