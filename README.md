@@ -2,7 +2,7 @@
 
 ## Overview
 
-**GaiminCalendator** is a Python-based application that scrapes match schedules from websites (like Liquipedia), extracts match data, and syncs them with a Google Calendar. This tool is perfect for keeping track of upcoming esports events by automatically updating a shared Google Calendar with match schedules.
+**GaiminCalendator** is a Python-based application that grabs Dota 2 match schedules from liquipedia and adds them to a calendar. 
 
 ## Features
 
@@ -23,17 +23,17 @@
 
 ### Step 1: Clone the Repository
 
-Clone the repository using the following command:
-
+```
 git clone https://github.com/your-repo/gaimincalendator.git  
 cd gaimincalendator
+```
 
 ### Step 2: Install Required Python Packages
 
 Install the required dependencies using `pip`:
-
+```
 pip install -r requirements.txt
-
+```
 ### Step 3: Google Calendar API Setup
 
 1. Enable the Google Calendar API:  
@@ -53,18 +53,19 @@ pip install -r requirements.txt
 
 You can run the main script to scrape matches and sync them to your Google Calendar:
 
+```
 python main.py
-
+```
 Make sure to update the `main.py` file with your Google Calendar ID:
-
+```
 GOOGLE_CALENDAR_ID = 'your_calendar_id_here'  # Replace with your actual calendar ID
-
+```
 ### Step 2: Deleting All Events from the Calendar
 
 If you want to clear the calendar of all events (e.g., after testing), you can run the following command:
-
+```
 python delete_events.py
-
+```
 This script will delete all events on the specified calendar.
 
 ### Step 3: Exporting Calendar as ICS
@@ -78,15 +79,15 @@ with open("matches_calendar.ics", "w") as f:
 ### Step 4: Schedule Regular Syncing
 
 You can automate syncing the calendar at regular intervals using:
-
 - Cron (Linux/macOS): To run the script every hour:
-
+```
 0 * * * * /usr/bin/python3 /path/to/gaimincalendator/main.py
-
+```
 - Task Scheduler (Windows): Create a task that runs the `main.py` file at your desired intervals.
 
 ## Project Structure
 
+```
 project/  
 ├── cache.py              # Handles caching for web scraping  
 ├── calendar_manager.py   # Manages calendar creation and ICS export  
@@ -97,8 +98,13 @@ project/
 ├── scraper.py            # Web scraping logic  
 ├── utils.py              # Utility functions like extracting stream information  
 ├── requirements.txt      # Python dependencies  
-├── credentials.json      # Google API credentials (DO NOT SHARE)  
+├── credentials.json      # Google API credentials
 └── README.md             # This file
+```
+
+
+
+
 
 ## Development
 
