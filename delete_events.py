@@ -5,7 +5,6 @@ from googleapiclient.discovery import build
 import os
 import pickle
 from dotenv import load_dotenv
-
 class GoogleCalendarCleaner:
     SCOPES = ['https://www.googleapis.com/auth/calendar']
 
@@ -30,24 +29,36 @@ class GoogleCalendarCleaner:
 
     def delete_all_events(self, calendar_id):
         """
-        Deletes all events from the given calendar.
+        Deletes all events from the given calendar, handling pagination.
         """
-        events = self.service.events().list(calendarId=calendar_id).execute()
-        events_list = events.get('items', [])
+        page_token = None
+        while True:
+            events_result = self.service.events().list(
+                calendarId=calendar_id,
+                pageToken=page_token,  # Handle pagination
+                showDeleted=False,     # Only get non-deleted events
+                singleEvents=True      # Get individual events
+            ).execute()
+            
+            events_list = events_result.get('items', [])
+            if not events_list:
+                print("No more events found.")
+                break
 
-        if not events_list:
-            print("No events found.")
-            return
+            for event in events_list:
+                try:
+                    print(f"Deleting event: {event.get('summary', 'No title')} ({event['id']})")
+                    self.service.events().delete(calendarId=calendar_id, eventId=event['id']).execute()
+                except Exception as e:
+                    print(f"An error occurred while deleting event {event.get('summary', 'No title')}: {e}")
 
-        for event in events_list:
-            try:
-                print(f"Deleting event: {event['summary']} ({event['id']})")
-                self.service.events().delete(calendarId=calendar_id, eventId=event['id']).execute()
-            except Exception as e:
-                print(f"An error occurred: {e}")
+            # Check if there's another page of events
+            page_token = events_result.get('nextPageToken')
+            if not page_token:
+                break
 
-if __name__ == "__main__":   
-    load_dotenv() # load ID from .env
-    GOOGLE_CALENDAR_ID = os.environ.get('CALENDAR_ID')  # Replace with actual calendar ID
+if __name__ == "__main__":
+    load_dotenv()
+    calendar_id = os.environ.get('CALENDAR_ID')
     cleaner = GoogleCalendarCleaner()
-    cleaner.delete_all_events(GOOGLE_CALENDAR_ID)
+    cleaner.delete_all_events(calendar_id)
