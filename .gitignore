@@ -9,3 +9,4 @@
 /token.pickle
 /__pycache__
 .env
+win_scheduler.ps1
