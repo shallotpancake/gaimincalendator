@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 from collections import defaultdict
 from models import Match, Stream
 from datetime import datetime, timedelta, timezone
+import interactive
+import os
 
 class Scrape:
     def __init__(self, url):
@@ -13,9 +15,12 @@ class Scrape:
         headers = {
             "User-Agent": "Mozilla/5.0"
         }
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        return BeautifulSoup(response.text, 'html.parser')
+        # deprecated? 
+        #response = requests.get(url, headers=headers)
+        #response.raise_for_status()
+        
+        html = interactive.get_tier_1_source(url)
+        return BeautifulSoup(html, 'html.parser')
 
     def get_elements_by_class(self, class_name):
         """
@@ -75,7 +80,7 @@ class Scrape:
     def extract_timezone_aware_datetime(self, match):
         """
         Convert data-timestamp and data-tz into a timezone-aware datetime object.
-        Handles timezones in +HH:mm or -HH:mm format.
+        Handles timezones in +HH:mm or -HH:mm format, and ensures proper parsing.
         """
         timer_object = match.find(class_='timer-object')
         if timer_object:
@@ -85,17 +90,28 @@ class Scrape:
             
             # Handle timezone in the format +HH:mm or -HH:mm
             if tz_string.startswith(('+', '-')):
-                sign = 1 if tz_string.startswith('+') else -1
-                hours_offset = int(tz_string[1:3])
-                minutes_offset = int(tz_string[4:6])
-                offset = timedelta(hours=sign * hours_offset, minutes=sign * minutes_offset)
-                tz = timezone(offset)
+                try:
+                    # Split the timezone string into hours and minutes
+                    hours_offset, minutes_offset = tz_string[1:].split(':')
+                    
+                    # Convert hours and minutes to integers
+                    hours_offset = int(hours_offset)
+                    minutes_offset = int(minutes_offset)
+
+                    # Determine if the offset is positive or negative
+                    sign = 1 if tz_string.startswith('+') else -1
+                    offset = timedelta(hours=sign * hours_offset, minutes=sign * minutes_offset)
+                    tz = timezone(offset)
+                except ValueError:
+                    # If parsing fails, fallback to UTC
+                    print(f"Error parsing timezone: {tz_string}. Falling back to UTC.")
+                    tz = timezone.utc
             else:
-                tz = timezone.utc  # Default to UTC if no valid tz is found
+                # Fallback to UTC if no valid tz is found
+                tz = timezone.utc
             
             # Convert the Unix timestamp to a timezone-aware datetime object
             dt = datetime.fromtimestamp(timestamp, tz)
-            
             return dt, tz
         return None, None
     

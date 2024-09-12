@@ -4,7 +4,7 @@ from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 import os
 import pickle
-from dotenv import load_dotenv
+
 class GoogleCalendarCleaner:
     SCOPES = ['https://www.googleapis.com/auth/calendar']
 
@@ -58,6 +58,7 @@ class GoogleCalendarCleaner:
                 break
 
 if __name__ == "__main__":
+    from dotenv import load_dotenv
     load_dotenv()
     calendar_id = os.environ.get('CALENDAR_ID')
     cleaner = GoogleCalendarCleaner()

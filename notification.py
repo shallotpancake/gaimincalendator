@@ -5,7 +5,6 @@ from google.auth.transport.requests import Request
 import base64
 from email.mime.text import MIMEText
 from googleapiclient.discovery import build
-from dotenv import load_dotenv
 import os
 
 # Define the scopes required for Gmail API
@@ -40,6 +39,7 @@ def send_email_via_gmail(subject, body, to):
     print("Email sent successfully!")
 
 if __name__ == "__main__":
+    from dotenv import load_dotenv
     load_dotenv()
     recipient = os.environ.get('NOTIFICATION_ADDRESS')
     send_email_via_gmail(
