@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 from collections import defaultdict
 from models import Match, Stream
 from datetime import datetime, timedelta, timezone
+import interactive
+import os
 
 class Scrape:
     def __init__(self, url):
@@ -13,9 +15,12 @@ class Scrape:
         headers = {
             "User-Agent": "Mozilla/5.0"
         }
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        return BeautifulSoup(response.text, 'html.parser')
+        # deprecated? 
+        #response = requests.get(url, headers=headers)
+        #response.raise_for_status()
+        
+        html = interactive.get_tier_1_source(url)
+        return BeautifulSoup(html, 'html.parser')
 
     def get_elements_by_class(self, class_name):
         """
