@@ -12,3 +12,4 @@
 win_scheduler.ps1
 token.json
 .env
+*.html
