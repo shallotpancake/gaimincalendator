@@ -15,13 +15,10 @@ import env_setup
 # helpers
 
 def find_file_in_tree(start_dir, target_filename):
-    # Walk through the directory tree
     for dirpath, dirnames, filenames in os.walk(start_dir):
-        # Check if the target file is in the current directory
         if target_filename in filenames:
-            # If found, return the full path of the file
             return os.path.join(dirpath, target_filename)
-    return None  # If file is not found
+    return None
 
 def get_platform():
     platforms = {
@@ -78,13 +75,14 @@ def get_tier_1_source(url):
     driver.get(url) 
     time.sleep(5)
     
-    try:
-        # Assuming the close button has a unique class or ID
-        close_button = driver.find_element(By.CSS_SELECTOR, ".app-popup button")  # Use appropriate selector (e.g., class, ID, etc.)
-        ActionChains(driver).move_to_element(close_button).click(close_button).perform()
-        print("Overlay closed.")
-    except Exception as e:
-        print(f"No overlay found or unable to close: {e}")
+
+
+    close_button = driver.find_element(By.CSS_SELECTOR, ".app-popup button")
+    ActionChains(driver).move_to_element(close_button).click(close_button).perform()
+    print("Overlay closed.")
+  
+    countdown_toggle = driver.find_element(By.CSS_SELECTOR, "div.switch-toggle")
+    ActionChains(driver).move_to_element(countdown_toggle).click(countdown_toggle).perform()
     
     # toggle all on
     all_button = driver.find_element(By.CSS_SELECTOR, "span[data-filter-on='all']")
@@ -92,9 +90,7 @@ def get_tier_1_source(url):
     
     # toggle all off
     all_button = driver.find_element(By.CSS_SELECTOR, "span[data-filter-on='all']")
-    # The line `ActionChains(driver).move_to_element(all_button).click(all_button).perform()` is using
-    # the `ActionChains` class from Selenium to perform a series of actions on a web element. Here's a
-    # breakdown of what each part of the line is doing:
+
     ActionChains(driver).move_to_element(all_button).click(all_button).perform()
     
     time.sleep(3)
@@ -116,6 +112,8 @@ def get_tier_1_source(url):
     return matches_html
 
 if __name__ == "__main__":
+    import env_setup
+    env_setup.load_environment()
     download_chromedriver()
     print(get_tier_1_source("https://liquipedia.net/dota2/Liquipedia:Matches"))
     
