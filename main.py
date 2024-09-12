@@ -5,7 +5,6 @@ import os
 import env_setup
 
 env_setup.load_environment()
-url = "https://liquipedia.net/dota2/Liquipedia:Matches"
 scraper = Scrape(os.environ.get('URL'))
 match_entries = scraper.parse_match_entries()
 
