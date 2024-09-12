@@ -2,9 +2,11 @@ from scraper import Scrape
 from google_sync import GoogleCalendarSync
 from dotenv import load_dotenv
 import os
-    
+import env_setup
+
+env_setup.load_environment()
 url = "https://liquipedia.net/dota2/Liquipedia:Matches"
-scraper = Scrape(url)
+scraper = Scrape(os.environ.get('URL'))
 match_entries = scraper.parse_match_entries()
 
 # Set up Google Calendar sync
