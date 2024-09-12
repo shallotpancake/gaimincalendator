@@ -72,11 +72,11 @@ This script will delete all events on the specified calendar.
 ### Step 3: Exporting Calendar as ICS
 
 To export the scraped matches to an `.ics` file, the program automatically generates a file called `matches_calendar.ics`:
-
+```
 # Generated in the main.py script  
 with open("matches_calendar.ics", "w") as f:  
     f.write(calendar.export_ics())
-
+```
 ### Step 4: Schedule Regular Syncing
 
 You can automate syncing the calendar at regular intervals using:
