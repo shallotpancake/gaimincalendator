@@ -3,7 +3,7 @@
 ## Overview
 
 **GaiminCalendator** is a Python-based application that grabs Dota 2 match schedules from liquipedia and adds them to a calendar. 
-
+[See the calendar here](https://calendar.google.com/calendar/u/0?cid=MGEwN2M5MTdhZjg0YzgxYWY5NTc1ODZhZDU2MTMwMmQyMmZiYTJhMTc5OWI3NjUzMTA1MjIxNDVjNDNhNjJkYUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t)
 ## Features
 
 - Web Scraping: Scrapes match data such as teams, tournament names, and stream information from a given URL.
