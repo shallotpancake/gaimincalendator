@@ -89,23 +89,28 @@ You can automate syncing the calendar at regular intervals using:
 ## Project Structure
 
 ```
-project/  
-├── cache.py              # Handles caching for web scraping  
+gaimincalendator/  
+├── cache.py              # Handles caching for web scraping (deprecated)  
 ├── calendar_manager.py   # Manages calendar creation and ICS export  
 ├── delete_events.py      # Script to delete all events from Google Calendar  
-├── google_sync.py        # Handles syncing events with Google Calendar  
+├── google_sync.py        # Handles syncing events with Google Calendar
+├── discord_sync.py       # Handles syncing events with Discord Events  
 ├── main.py               # Main script to scrape, manage, and sync calendar events  
 ├── models.py             # Defines the Match and Stream classes  
-├── scraper.py            # Web scraping logic  
-├── utils.py              # Utility functions like extracting stream information  
+├── scraper.py            # Web scraping logic
 ├── requirements.txt      # Python dependencies  
-├── credentials.json      # Google API credentials
-└── README.md             # This file
+└── README.md             # You are here :-)
 ```
 
+## Discord Integration
+### Create a Discord Application and Bot
 
-
-
+    Go to the Discord Developer Portal.
+    Click on New Application and give your application a name.
+    In the left sidebar, go to Bot and click Add Bot. Confirm to create a new bot.
+    Under TOKEN, click "Copy" to copy your bot’s token. Keep this token secure, as it grants access to your bot.
+    In the OAuth2 section, under OAuth2 URL Generator, check the bot scope, and then assign your bot the necessary permissions (e.g., Send Messages, Manage Events).
+    Copy the generated URL and paste it into your browser to invite the bot to your server.
 
 ## Development
 
