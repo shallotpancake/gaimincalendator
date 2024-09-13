@@ -35,9 +35,7 @@ class DiscordEventSync:
             headers=self.headers
         )
 
-        if response.status_code != 200:
-            print(f"Failed to fetch events: {response.status_code}, {response.text}")
-            return None
+        response.raise_for_status()
 
         events = response.json()
         for event in events:
