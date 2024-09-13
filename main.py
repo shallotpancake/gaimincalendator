@@ -9,6 +9,9 @@ import time
 env_setup.load_environment()
 scraper = Scrape(os.environ.get('URL'))
 match_entries = scraper.parse_match_entries()
+print(f"scraper.py - Match entries found: {len(match_entries)}")
+with open('matches.json', 'w') as f:
+    f.write(str(match_entries))
 
 # Set up Google Calendar sync
 load_dotenv() # load ID from .env
@@ -23,8 +26,17 @@ discord_sync = DiscordEventSync(BOT_TOKEN, GUILD_ID, CHANNEL_ID)
 
 print("Syncing match entries to Google Calendar:")
 for index, match in enumerate(match_entries):
-    if index > 5:
+    if index > 5: # limit this to 5 events, too noisy
         break
     google_sync.add_or_update_event(GOOGLE_CALENDAR_ID, match)
-    #discord_sync.add_or_update_event(match)
-    #time.sleep(5) # discord keeps rate limiting me reeeeeeeee
+    
+print("Google calendar sync complete.")
+    
+print("Syncing match entries to Discord Guild Events:")
+for index, match in enumerate(match_entries):
+    if index > 5: # limit this to 5 events, discord API is annoying
+        break
+    discord_sync.add_or_update_event(match) #this is completely broken, maybe
+    time.sleep(5) # discord keeps rate limiting me reeeeeeeee
+    
+print("Discord events sync complete.")

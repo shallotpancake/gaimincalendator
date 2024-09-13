@@ -59,7 +59,7 @@ class GoogleCalendarSync:
         Adds a new event or updates an existing one if found using a unique identifier.
         """
         start_time = match.data_timestamp.isoformat()  # Start time of the event
-        unique_id = self.create_unique_id(match)  # Generate a unique ID for the match
+        unique_id = self.create_unique_id()  # Generate a unique ID for the match
 
         existing_event = self.search_event_by_unique_id(calendar_id, unique_id)
 

@@ -109,7 +109,7 @@ def get_tier_1_source(url):
 
     driver.quit()
     
-    return matches_html
+    return html
 
 if __name__ == "__main__":
     import env_setup

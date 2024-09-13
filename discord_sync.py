@@ -1,6 +1,6 @@
 import requests
 import json
-from datetime import timedelta
+from datetime import datetime, timedelta
 import string
 import random
 
@@ -49,7 +49,8 @@ class DiscordEventSync:
         Adds a new event or updates an existing one if found using a unique identifier.
         """
         unique_id = self.create_unique_id()
-        existing_event = self.search_event_by_unique_id(unique_id)
+        #existing_event = self.search_event_by_unique_id(unique_id) the discord API is too sensitive for this type of check. maybe I just delete all events and write new on run
+        existing_event = None 
 
         event_data = {
             "name": f"{match.team_left} vs {match.team_right}",
@@ -72,6 +73,8 @@ class DiscordEventSync:
                 headers=self.headers,
                 data=json.dumps(event_data)
             )
+        elif match.data_timestamp <= datetime.now(): # discord can't accept events that are currently happening
+            pass
         else:
             # Create a new event
             print(f"Creating new event: {event_data['name']}")
