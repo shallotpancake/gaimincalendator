@@ -3,6 +3,7 @@ import json
 from datetime import datetime, timedelta
 import string
 import random
+from collections import defaultdict
 
 DISCORD_API_URL = "https://discord.com/api/v10"
 
@@ -43,15 +44,9 @@ class DiscordEventSync:
                 return event
 
         return None
-
-    def add_or_update_event(self, match):
-        """
-        Adds a new event or updates an existing one if found using a unique identifier.
-        """
+    
+    def match_to_event(self, match):
         unique_id = self.create_unique_id()
-        #existing_event = self.search_event_by_unique_id(unique_id) the discord API is too sensitive for this type of check. maybe I just delete all events and write new on run
-        existing_event = None 
-
         event_data = {
             "name": f"{match.team_left} vs {match.team_right}",
             "description": f"Tournament: {match.tournament}\nStreams: {', '.join([str(stream) for stream in match.streams.values()])}\n{unique_id}",
@@ -63,31 +58,29 @@ class DiscordEventSync:
                 "location": "Online"
             }
         }
+        return event_data
 
-        if existing_event:
-            # Update the existing event
-            event_id = existing_event['id']
-            print(f"Updating existing event: {event_data['name']}")
-            response = requests.patch(
-                f"{DISCORD_API_URL}/guilds/{self.guild_id}/scheduled-events/{event_id}",
-                headers=self.headers,
-                data=json.dumps(event_data)
-            )
-        elif match.data_timestamp <= datetime.now(): # discord can't accept events that are currently happening
+    def add_or_update_event(self, match):
+        """
+        Adds a new event or updates an existing one if found using a unique identifier.
+        """
+        print("add_or_update_event")
+        #existing_event = self.search_event_by_unique_id(unique_id) the discord API is too sensitive for this type of check. maybe I just delete all events and write new on run
+        #existing_event = None 
+        event = self.match_to_event(match)
+        # Create a new event
+        print(f"Creating new event: {event['name']}")
+        response = requests.post(
+            f"{DISCORD_API_URL}/guilds/{self.guild_id}/scheduled-events",
+            headers=self.headers,
+            data=json.dumps(event)
+        )
+        try:
+            print(response.text)
+            response.raise_for_status()
+        except:
             pass
-        else:
-            # Create a new event
-            print(f"Creating new event: {event_data['name']}")
-            response = requests.post(
-                f"{DISCORD_API_URL}/guilds/{self.guild_id}/scheduled-events",
-                headers=self.headers,
-                data=json.dumps(event_data)
-            )
 
-        if response.status_code in [200, 201]:
-            print(f"Event created/updated successfully: {event_data['name']}")
-        else:
-            print(f"Failed to create/update event: {response.status_code}, {response.text}")
 
     def delete_event_by_unique_id(self, unique_id):
         """
@@ -107,3 +100,21 @@ class DiscordEventSync:
                 print(f"Failed to delete event: {response.status_code}, {response.text}")
         else:
             print(f"No event found with ID: {unique_id}")
+            
+if __name__ == "__main__":
+    import os
+    from dotenv import load_dotenv
+    from datetime import datetime, timedelta, timezone
+    from models import Match, Stream
+    load_dotenv()
+    streams = defaultdict(list)
+    streams['twitch'].append(Stream('twitch', 'The_International'))
+    match = Match("Test", "Test", "TI", streams, (datetime.now(timezone.utc) + timedelta(hours=1)), "UTC-05: 00")
+    
+    BOT_TOKEN = os.environ.get('DISCORD_BOT_TOKEN')
+    GUILD_ID = os.environ.get('GUILD_ID')
+    CHANNEL_ID = os.environ.get('CHANNEL_ID')
+    
+    discord_sync = DiscordEventSync(BOT_TOKEN, GUILD_ID, CHANNEL_ID)
+    discord_sync.add_or_update_event(match)
+
