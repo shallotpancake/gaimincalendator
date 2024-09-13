@@ -26,5 +26,5 @@ for index, match in enumerate(match_entries):
     if index > 5:
         break
     google_sync.add_or_update_event(GOOGLE_CALENDAR_ID, match)
-    discord_sync.add_or_update_event(match)
-    time.sleep(5) # discord keeps rate limiting me reeeeeeeee
+    #discord_sync.add_or_update_event(match)
+    #time.sleep(5) # discord keeps rate limiting me reeeeeeeee
