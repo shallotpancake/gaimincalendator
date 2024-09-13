@@ -5,6 +5,8 @@ from googleapiclient.discovery import build
 from datetime import timedelta
 import os
 import pickle
+import random
+import string
 
 class GoogleCalendarSync:
     SCOPES = ['https://www.googleapis.com/auth/calendar']
@@ -27,12 +29,16 @@ class GoogleCalendarSync:
             with open('token.pickle', 'wb') as token:
                 pickle.dump(self.creds, token)
         self.service = build('calendar', 'v3', credentials=self.creds)
-
-    def create_unique_id(self, match):
+        
+    def create_unique_id(self):
         """
-        Creates a unique identifier for a match based on teams and timestamp.
+        Creates a unique identifier for a match
         """
-        return f"{match.team_left}_vs_{match.team_right}_{match.data_timestamp.isoformat()}"
+        # Define the characters to choose from (letters and digits)
+        characters = string.ascii_letters + string.digits
+        # Use random.choices to generate a list of random characters, then join them into a string
+        random_string = ''.join(random.choices(characters, k=50))
+        return random_string
 
     def search_event_by_unique_id(self, calendar_id, unique_id):
         """
