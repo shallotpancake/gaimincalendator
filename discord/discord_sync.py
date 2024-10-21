@@ -88,7 +88,7 @@ def get_discord_events():
 def remove_duplicates(incoming_events: list[Event]) -> list:
     unique_events = []
 
-    with open("temp/event_id_cache.txt", "r") as f:
+    with open("temp/discord_event_id_cache.txt", "r") as f:
         existing_events = f.read()
 
     print(f"Starting event count: {len(incoming_events)}")
