@@ -6,6 +6,7 @@
 ```
 git clone https://github.com/shallotpancake/gaimincalendator.git
 cd gaimincalendator
+pip install -r requirements.txt
 ```
 crontab example
 ```
