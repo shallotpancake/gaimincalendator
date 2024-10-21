@@ -4,13 +4,14 @@
 
 ## Quick Setup
 ```
+cd ~
 git clone https://github.com/shallotpancake/gaimincalendator.git
 cd gaimincalendator
 pip install -r requirements.txt
 ```
 crontab example
 ```
-@hourly /home/$USER/dotacal/gaimincalendator/.venv/bin/python /home/$USER/dotacal/gaimincalendator/main.py > /home/$USER/dotacal/log
+@hourly /home/$USER/gaimincalendator/.venv/bin/python /home/$USER/gaimincalendator/main.py > /home/$USER/dotacal/log
 ```
 
 ## Overview
