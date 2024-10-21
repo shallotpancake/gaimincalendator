@@ -31,7 +31,7 @@ def post_event(match, uid):
         response.raise_for_status()
     except:
         pass
-    with open("temp/event_id_cache.txt", "a") as f:
+    with open("temp/discord_event_id_cache.txt", "a") as f:
         f.write(f"{uid}\n")
     return response.status_code
 

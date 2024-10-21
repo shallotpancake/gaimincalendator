@@ -14,7 +14,9 @@ for path in paths:
     p = Path(root).joinpath(path)
     p.mkdir(exist_ok=True)
 
-files = ['temp/discord_event_id_cache.txt','temp/gcal_event_id_cache.txt']
+files = ['temp/discord_event_id_cache.txt',
+         'temp/latest_matches.json',]
+
 for file in files:
     f = Path(root).joinpath(file)
     f.touch(exist_ok=True)
@@ -24,27 +26,14 @@ env_setup.load_environment()
 scraper = Scrape()
 
 events = scraper.events
-with open('matches.json', 'w') as f:
+with open('latest_matches.json', 'w') as f:
     f.write(str(events))
 
-# Set up Google Calendar sync
-
-
-load_dotenv() # load ID from .env
-#GOOGLE_CALENDAR_ID = os.environ.get('CALENDAR_ID')
-#google_sync = GoogleCalendarSync()
 
 # Set up Discord Event sync
 BOT_TOKEN = os.environ.get('DISCORD_BOT_TOKEN')
 GUILD_ID = os.environ.get('GUILD_ID')
 CHANNEL_ID = os.environ.get('CHANNEL_ID')
-
-print("Syncing match entries to Google Calendar:")
-for match in events:
-    #google_sync.add_or_update_event(GOOGLE_CALENDAR_ID, match)
-    ...
-    
-print("Google calendar sync complete.")
 
 DiscordSync(events)
     
