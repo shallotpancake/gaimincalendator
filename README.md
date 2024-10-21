@@ -2,6 +2,16 @@
 
 *** as of the latest version, GCal support has been removed. This now works for only Discord events. ***
 
+## Quick Setup
+```
+git clone https://github.com/shallotpancake/gaimincalendator.git
+cd gaimincalendator
+```
+crontab example
+```
+@hourly /home/$USER/dotacal/gaimincalendator/.venv/bin/python /home/$USER/dotacal/gaimincalendator/main.py > /home/$USER/dotacal/log
+```
+
 ## Overview
 
 **GaiminCalendator** is a Python-based application that grabs Dota 2 match schedules from liquipedia and adds them to a calendar. 
