@@ -24,7 +24,7 @@
 ### Step 1: Clone the Repository
 
 ```
-git clone https://github.com/your-repo/gaimincalendator.git  
+git clone https://github.com/shallotpancake/gaimincalendator.git
 cd gaimincalendator
 ```
 
