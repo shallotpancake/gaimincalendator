@@ -14,6 +14,6 @@ token.json
 .env
 *.html
 driver/
-temp/
+temp/*
 *reference/
 *.json
