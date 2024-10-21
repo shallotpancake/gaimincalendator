@@ -1,11 +1,9 @@
 from scraper import Scrape
-from google_sync import GoogleCalendarSync
 from dotenv import load_dotenv
 import os
-import env_setup
-from discord_sync import DiscordSync
-import time
-from event import matches_to_event
+import lib.env_setup as env_setup
+from discord.discord_sync import DiscordSync
+
 from pathlib import Path
 
 root = os.getcwd()
@@ -21,8 +19,6 @@ for file in files:
     f = Path(root).joinpath(file)
     f.touch(exist_ok=True)
 
-
-do_discordsync = True
 
 env_setup.load_environment()
 scraper = Scrape()
