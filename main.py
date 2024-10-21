@@ -14,7 +14,7 @@ for path in paths:
     p = Path(root).joinpath(path)
     p.mkdir(exist_ok=True)
 
-files = ['temp/event_id_cache.txt',]
+files = ['temp/discord_event_id_cache.txt','temp/gcal_event_id_cache.txt']
 for file in files:
     f = Path(root).joinpath(file)
     f.touch(exist_ok=True)
