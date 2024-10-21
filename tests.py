@@ -1,9 +1,9 @@
 import unittest
-from event import Event
+from obj.event import Event
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
-import discord_sync
+import discord.discord_sync as discord_sync
 
 load_dotenv()
 BOT_TOKEN = os.environ.get('DISCORD_BOT_TOKEN')

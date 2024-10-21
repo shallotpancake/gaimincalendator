@@ -1,10 +1,9 @@
 from bs4 import BeautifulSoup
 from collections import defaultdict
-from models import Match, Stream
+from obj.models import Match, Stream
 from datetime import datetime, timedelta, timezone
-import interactive
 import requests
-from event import Event,matches_to_event
+from obj.event import Event,matches_to_event
 
 class Scrape:
     def __init__(self):
