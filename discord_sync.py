@@ -3,7 +3,6 @@ import json
 from event import Event
 from dotenv import load_dotenv
 import os
-import cache_discord
 from time import sleep
 
 def post_event(match, uid):
