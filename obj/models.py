@@ -1,24 +1,3 @@
-class Stream:
-    def __init__(self, service, stream_id):
-        self.service = service
-        self.stream_id = stream_id
-        self.link = self.construct_link()
-
-    def construct_link(self):
-        """
-        Constructs a stream link based on the service (platform).
-        """
-        if self.service == 'youtube':
-            return f"https://youtube.com/watch?v={self.stream_id}"
-        elif self.service == 'twitch':
-            return f"https://twitch.tv/{self.stream_id}"
-        # Add more services as needed
-        else:
-            return f"Unknown service: {self.service}"
-
-    def __repr__(self):
-        return self.link
-
 class Match:
     def __init__(self, team_left, team_right, tournament, streams, data_timestamp):
         self.team_left = team_left
