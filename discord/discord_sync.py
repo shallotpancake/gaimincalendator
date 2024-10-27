@@ -138,7 +138,7 @@ def DiscordSync(incoming_events: list):
 
     i = 0
     for event in new_events:
-        if i > 0:
+        if i > 5:
             break   
         post_event(event, event.uid)
         i+=1
