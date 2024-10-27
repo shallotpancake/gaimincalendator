@@ -7,12 +7,13 @@
 /matches_calendar.ics
 /MediaWikiAPI.py
 /token.pickle
-/__pycache__
+*__pycache__*
 .env
 win_scheduler.ps1
 token.json
 .env
 *.html
 driver/
-temp/
+temp/*
 *reference/
+*.json

@@ -1,25 +1,27 @@
-import requests
 from bs4 import BeautifulSoup
 from collections import defaultdict
-from models import Match, Stream
+from obj.models import Match, Stream
 from datetime import datetime, timedelta, timezone
-import interactive
-import os
+import requests
+from obj.event import Event,matches_to_event
 
 class Scrape:
-    def __init__(self, url):
+    def __init__(self):
         # Fetch the data and parse it
-        self.soup = self.fetch_data(url)
+        self.soup = self.fetch_data()
+        self.matches = self.remove_tbd(self.parse_match_entries())
+        self.events = matches_to_event(self.matches)
 
-    def fetch_data(self, url):
+
+    def fetch_data(self):
         headers = {
-            "User-Agent": "Mozilla/5.0"
+            "User-Agent": "Mozilla/5.0",
+            "Content-Type": "application/json"
         }
-        # deprecated? 
-        #response = requests.get(url, headers=headers)
-        #response.raise_for_status()
-        
-        html = interactive.get_tier_1_source(url)
+        url = r"https://liquipedia.net/dota2/api.php?action=parse&format=json&contentmodel=wikitext&maxage=600&smaxage=600&disablelimitreport=true&uselang=content&prop=text&text={{NewDota2_matches_upcoming|filterbuttons-liquipediatier=1|filterbuttons-liquipediatiertype=Monthly,Weekly,Qualifier,Misc,Showmatch,National}}"
+
+        html = requests.get(url=url, headers=headers).json()["parse"]["text"]["*"]
+
         return BeautifulSoup(html, 'html.parser')
 
     def get_elements_by_class(self, class_name):
@@ -36,12 +38,22 @@ class Scrape:
             team_right = self.extract_team_name(match, 'team-right')
             tournament = self.extract_tournament(match)
             streams = self.extract_streams(match)  # Streams now contains Stream objects
-            data_timestamp, data_tz = self.extract_timezone_aware_datetime(match)
+            data_timestamp = self.extract_timezone_aware_datetime(match)
             
-            match_entry = Match(team_left, team_right, tournament, streams, data_timestamp, data_tz)
+            match_entry = Match(team_left, team_right, tournament, streams, data_timestamp)
             match_entries.append(match_entry)
         
         return match_entries
+    
+    def remove_tbd(self, matches):
+        unique_matches = []
+        for match in matches:
+            if "TBD" in match.team_left or "TBD" in match.team_right:
+                ...
+            else:
+                unique_matches.append(match)
+
+        return unique_matches
 
     def extract_team_name(self, match, side):
         team_side = match.find(class_=side)
@@ -82,39 +94,9 @@ class Scrape:
         Convert data-timestamp and data-tz into a timezone-aware datetime object.
         Handles timezones in +HH:mm or -HH:mm format, and ensures proper parsing.
         """
-        timer_object = match.find(class_='timer-object')
-        if timer_object:
-            # Extract the timestamp and timezone offset
-            timestamp = int(timer_object.get('data-timestamp', 0))
-            tz_string = timer_object.find('abbr').get('data-tz', 'UTC')
-            
-            # Handle timezone in the format +HH:mm or -HH:mm
-            if tz_string.startswith(('+', '-')):
-                try:
-                    # Split the timezone string into hours and minutes
-                    hours_offset, minutes_offset = tz_string[1:].split(':')
-                    
-                    # Convert hours and minutes to integers
-                    hours_offset = int(hours_offset)
-                    minutes_offset = int(minutes_offset)
 
-                    # Determine if the offset is positive or negative
-                    sign = 1 if tz_string.startswith('+') else -1
-                    offset = timedelta(hours=sign * hours_offset, minutes=sign * minutes_offset)
-                    tz = timezone(offset)
-                except ValueError:
-                    # If parsing fails, fallback to UTC
-                    print(f"Error parsing timezone: {tz_string}. Falling back to UTC.")
-                    tz = timezone.utc
-            else:
-                # Fallback to UTC if no valid tz is found
-                tz = timezone.utc
-            
-            # Convert the Unix timestamp to a timezone-aware datetime object
-            dt = datetime.fromtimestamp(timestamp, tz)
-            return dt, tz
-        return None, None
-    
+        return int(match.find(class_='timer-object').attrs["data-timestamp"])
+
     def extract_category_and_title_from_href(self, href):
         """
         Extracts the service (platform) and the stream ID from the href.
@@ -126,3 +108,7 @@ class Scrape:
             stream_id = parts[-1]  # The last part is the unique identifier for the stream
             return Stream(service, stream_id)  # Return a Stream object with the link
         return None  # Return None if the format is not valid
+
+if __name__ == "__main__":
+    s = Scrape()
+    print(*s.events, sep='\n')
