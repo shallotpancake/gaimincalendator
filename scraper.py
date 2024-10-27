@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from collections import defaultdict
-from obj.models import Match, Stream
+from obj.models import Match
 from datetime import datetime, timedelta, timezone
 import requests
 from obj.event import Event,matches_to_event
@@ -37,7 +37,7 @@ class Scrape:
             team_left = self.extract_team_name(match, 'team-left')
             team_right = self.extract_team_name(match, 'team-right')
             tournament = self.extract_tournament(match)
-            streams = self.extract_streams(match)  # Streams now contains Stream objects
+            streams = self.extract_streams(match)  
             data_timestamp = self.extract_timezone_aware_datetime(match)
             
             match_entry = Match(team_left, team_right, tournament, streams, data_timestamp)
@@ -77,17 +77,15 @@ class Scrape:
         Each stream contains a dynamically constructed link.
         """
         match_streams = match.find(class_='match-streams')
-        categorized_streams = defaultdict(list)
+        stream_links = []
         
         if match_streams:
             streams = match_streams.find_all('a', href=True)
             for stream in streams:
                 href = stream.get('href', '')
-                stream_obj = self.extract_category_and_title_from_href(href)
-                if stream_obj:
-                    categorized_streams[stream_obj.service].append(stream_obj)  # Store the Stream object
+                stream_links.append(f"https://liquipedia.net{href}")
         
-        return dict(categorized_streams)
+        return stream_links
 
     def extract_timezone_aware_datetime(self, match):
         """
@@ -97,18 +95,8 @@ class Scrape:
 
         return int(match.find(class_='timer-object').attrs["data-timestamp"])
 
-    def extract_category_and_title_from_href(self, href):
-        """
-        Extracts the service (platform) and the stream ID from the href.
-        Constructs a Stream object with the link.
-        """
-        parts = href.split('/')
-        if len(parts) >= 4 and parts[2] == 'Special:Stream':
-            service = parts[3]  # The service category (e.g., 'youtube', 'twitch')
-            stream_id = parts[-1]  # The last part is the unique identifier for the stream
-            return Stream(service, stream_id)  # Return a Stream object with the link
-        return None  # Return None if the format is not valid
 
 if __name__ == "__main__":
     s = Scrape()
+    print(*s.matches, sep='\n')
     print(*s.events, sep='\n')
