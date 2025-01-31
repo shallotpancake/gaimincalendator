@@ -117,7 +117,7 @@ def clear_events():
     events = get_discord_events()
     for event in events:
         requests.delete(
-        f"{DISCORD_API_URL}/guilds/{GUILD_ID}/scheduled-events/{event["id"]}",
+        f"{DISCORD_API_URL}/guilds/{GUILD_ID}/scheduled-events/{event['id']}",
         headers=headers
         )
         sleep(1)
@@ -128,7 +128,7 @@ def clear_events():
     if events:
         for event in events:
             requests.delete(
-            f"{DISCORD_API_URL}/guilds/{GUILD_ID}/scheduled-events/{event["id"]}",
+            f"{DISCORD_API_URL}/guilds/{GUILD_ID}/scheduled-events/{event['id']}",
             headers=headers
             )
             sleep(1)
