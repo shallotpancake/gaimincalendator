@@ -15,4 +15,5 @@ fi
 echo "Running the container..."
 podman run \
   -v $(pwd)/.env:/.env \
+  -v $(pwd)/temp/:/temp/ \
   --rm -it $IMAGE_NAME
