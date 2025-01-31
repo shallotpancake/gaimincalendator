@@ -13,4 +13,6 @@ fi
 
 # Run the container
 echo "Running the container..."
-podman run --rm -it $IMAGE_NAME
+podman run \
+  -v $(pwd)/.env:/.env \
+  --rm -it $IMAGE_NAME
