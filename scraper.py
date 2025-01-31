@@ -4,6 +4,7 @@ from obj.models import Match
 from datetime import datetime, timedelta, timezone
 import requests
 from obj.event import Event,matches_to_event
+from lib.stream_converter import convert_stream
 
 class Scrape:
     def __init__(self):
@@ -83,7 +84,8 @@ class Scrape:
             streams = match_streams.find_all('a', href=True)
             for stream in streams:
                 href = stream.get('href', '')
-                stream_links.append(f"https://liquipedia.net{href}")
+                emb_stream = convert_stream(f"https://liquipedia.net{href}")
+                stream_links.append(emb_stream)
         
         return stream_links
 
@@ -94,7 +96,6 @@ class Scrape:
         """
 
         return int(match.find(class_='timer-object').attrs["data-timestamp"])
-
 
 if __name__ == "__main__":
     s = Scrape()
